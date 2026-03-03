@@ -1,0 +1,8 @@
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+youtube-transcript-api
+openai
+matplotlib
+seaborn
+python-dotenv
