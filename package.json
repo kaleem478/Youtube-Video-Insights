@@ -1,0 +1,28 @@
+{
+  "name": "antigravity",
+  "version": "1.0.0",
+  "description": "This project is an automated AI agent workflow adhering to the **WAT (Workflows, Agents, Tools)** architecture. It is designed to automatically scrape YouTube channels in the AI and AI automation niche, synthesize the data into a Google Slides presentation, and email the final intelligence deliverable.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaleem478/Youtube-Video-Insights.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kaleem478/Youtube-Video-Insights/issues"
+  },
+  "homepage": "https://github.com/kaleem478/Youtube-Video-Insights#readme",
+  "devDependencies": {
+    "@trigger.dev/build": "4.4.2",
+    "@trigger.dev/python": "4.4.2",
+    "@trigger.dev/sdk": "4.4.2",
+    "@types/node": "^25.3.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

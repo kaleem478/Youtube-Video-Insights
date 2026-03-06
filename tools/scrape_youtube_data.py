@@ -7,50 +7,84 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from dotenv import load_dotenv
 import datetime
 
+from googleapiclient.errors import HttpError
+import sys
+
 # Load env variables (YouTube API Key)
 load_dotenv()
 
-YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+# Support multiple comma-separated keys
+YOUTUBE_API_KEYS = [k.strip() for k in os.getenv("YOUTUBE_API_KEY", "").split(",") if k.strip()]
 
-if not YOUTUBE_API_KEY:
+if not YOUTUBE_API_KEYS:
     raise ValueError("YOUTUBE_API_KEY is missing from .env")
 
-youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
+current_key_index = 0
+youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEYS[current_key_index])
+
+def execute_request_with_retry(request_creator):
+    global current_key_index
+    global youtube
+    while True:
+        try:
+            request = request_creator(youtube)
+            return request.execute()
+        except HttpError as e:
+            if e.resp.status == 403 and "quota" in str(e).lower():
+                print(f"Quota exceeded for API Key {current_key_index + 1}. ", file=sys.stderr)
+                current_key_index += 1
+                if current_key_index < len(YOUTUBE_API_KEYS):
+                    print(f"Switching to API Key {current_key_index + 1}...", file=sys.stderr)
+                    youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEYS[current_key_index])
+                else:
+                    raise Exception("All provided YouTube API keys have exhausted their quota!")
+            else:
+                raise e
 
 def get_channel_videos(channel_id: str, max_results: int = 10) -> List[Dict[str, Any]]:
     """Fetch the latest videos for a given YouTube channel ID."""
     print(f"Fetching latest {max_results} videos for channel: {channel_id}")
-    seven_days_ago = (datetime.datetime.utcnow() - datetime.timedelta(days=7)).isoformat() + "Z"
-    request = youtube.search().list(
-        part="snippet",
-        channelId=channel_id,
-        q='"Artificial Intelligence" OR "AI automation"',
-        maxResults=max_results,
-        order="date",
-        publishedAfter=seven_days_ago,
-        relevanceLanguage="en",
-        type="video"
-    )
-    response = request.execute()
+    seven_days_ago = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=7)).isoformat().replace("+00:00", "Z")
+    def request_creator(yt):
+        return yt.search().list(
+            part="snippet",
+            channelId=channel_id,
+            q='"Artificial Intelligence" OR "AI automation"',
+            maxResults=max_results,
+            order="date",
+            publishedAfter=seven_days_ago,
+            relevanceLanguage="en",
+            type="video"
+        )
+    response = execute_request_with_retry(request_creator)
     
     videos = []
     for item in response.get("items", []):
+        thumbnails = item["snippet"].get("thumbnails", {})
+        thumb_url = ""
+        for quality in ["maxres", "standard", "high", "medium", "default"]:
+            if quality in thumbnails:
+                thumb_url = thumbnails[quality]["url"]
+                break
+
         videos.append({
             "video_id": item["id"]["videoId"],
             "title": item["snippet"]["title"],
             "channel_title": item["snippet"].get("channelTitle", "Unknown Channel"),
             "published_at": item["snippet"]["publishedAt"],
-            "description": item["snippet"]["description"]
+            "description": item["snippet"]["description"],
+            "thumbnail_url": thumb_url
         })
     return videos
 
 def get_video_stats(video_id: str) -> Dict[str, Any]:
     """Fetch view count and likes for a video."""
-    request = youtube.videos().list(
-        part="statistics",
-        id=video_id
-    )
-    response = request.execute()
+    def request_creator(yt):
+        return yt.videos().list(
+            part="statistics",
+            id=video_id
+        )
+    response = execute_request_with_retry(request_creator)
     
     if not response.get("items"):
         return {"viewCount": 0, "likeCount": 0, "commentCount": 0}
@@ -64,11 +98,12 @@ def get_video_stats(video_id: str) -> Dict[str, Any]:
 
 def get_channel_stats(channel_id: str) -> Dict[str, Any]:
     """Fetch subscriber count and other stats for a channel."""
-    request = youtube.channels().list(
-        part="statistics",
-        id=channel_id
-    )
-    response = request.execute()
+    def request_creator(yt):
+        return yt.channels().list(
+            part="statistics",
+            id=channel_id
+        )
+    response = execute_request_with_retry(request_creator)
     if not response.get("items"):
         return {"subscriberCount": 0}
     stats = response["items"][0]["statistics"]
@@ -91,15 +126,16 @@ def find_top_channels(query: str, max_results: int = 30) -> List[str]:
     print(f"Finding potential channels for query: '{query}'")
     
     # YouTube API limits maxResults to 50 per search
-    request = youtube.search().list(
-        part="snippet",
-        q='("Artificial Intelligence" OR "AI automation") -hindi -urdu',
-        type="channel",
-        maxResults=50,
-        order="relevance",
-        relevanceLanguage="en"
-    )
-    response = request.execute()
+    def request_creator(yt):
+        return yt.search().list(
+            part="snippet",
+            q='("Artificial Intelligence" OR "AI automation") -hindi -urdu',
+            type="channel",
+            maxResults=50,
+            order="relevance",
+            relevanceLanguage="en"
+        )
+    response = execute_request_with_retry(request_creator)
     
     found_channels = []
     for item in response.get("items", []):
@@ -112,11 +148,12 @@ def find_top_channels(query: str, max_results: int = 30) -> List[str]:
         
     # Batch request for channel statistics
     chunk_ids = ",".join(found_channels)
-    stats_req = youtube.channels().list(
-        part="statistics",
-        id=chunk_ids
-    )
-    stats_res = stats_req.execute()
+    def stats_req_creator(yt):
+        return yt.channels().list(
+            part="statistics",
+            id=chunk_ids
+        )
+    stats_res = execute_request_with_retry(stats_req_creator)
     
     channel_subs = []
     for item in stats_res.get("items", []):
@@ -174,7 +211,7 @@ def main():
     with open(args.output, 'w', encoding='utf-8') as f:
         json.dump(all_data, f, indent=2, ensure_ascii=False)
         
-    print(f"✅ Successfully saved scraped data to {args.output}")
+    print(f"Successfully saved scraped data to {args.output}")
 
 if __name__ == "__main__":
     main()
