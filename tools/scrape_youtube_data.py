@@ -11,7 +11,7 @@ from googleapiclient.errors import HttpError
 import sys
 
 # Load env variables (YouTube API Key)
-load_dotenv()
+load_dotenv(override=True)
 
 # Support multiple comma-separated keys
 YOUTUBE_API_KEYS = [k.strip() for k in os.getenv("YOUTUBE_API_KEY", "").split(",") if k.strip()]
