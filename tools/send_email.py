@@ -95,11 +95,18 @@ def main():
                 for cid, videos in data.items():
                     all_videos.extend(videos)
                 
-                # Sort by views
-                top_videos = sorted(all_videos, key=lambda x: x.get('stats', {}).get('viewCount', 0), reverse=True)[:10]
+                # Sort by views (primary) and likes (secondary)
+                top_videos = sorted(all_videos, key=lambda x: (x.get('stats', {}).get('viewCount', 0), x.get('stats', {}).get('likeCount', 0)), reverse=True)[:30]
                 
                 if top_videos:
-                    top_videos_html = "<h2>🔥 Top 10 Trending AI Videos</h2><table style='width:100%; max-width: 800px; border-collapse: collapse; font-family: sans-serif;'>"
+                    top_videos_html = """
+                    <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+                        <div style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); padding: 30px 20px; text-align: center;">
+                            <h1 style="margin: 0; color: white; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">🔥 Top 30 Viral AI Videos</h1>
+                            <p style="margin: 10px 0 0; color: rgba(255,255,255,0.9); font-size: 15px;">The most hyped AI & Automation content from the last 7 days</p>
+                        </div>
+                        <div style="padding: 30px 20px;">
+                    """
                     for i, v in enumerate(top_videos):
                         title = v.get('title', 'Unknown')
                         views = v.get('stats', {}).get('viewCount', 0)
@@ -107,24 +114,50 @@ def main():
                         channel = v.get('channel_title', 'Unknown')
                         thumb = v.get('thumbnail_url', '')
                         vid_id = v.get('video_id', '')
+                        desc = v.get('description', '') or ''
+                        
+                        # Truncate description beautifully
+                        if len(desc) > 140:
+                            desc = desc[:137] + "..."
+                            
                         url = f"https://www.youtube.com/watch?v={vid_id}"
                         
-                        top_videos_html += f"<tr>"
-                        top_videos_html += f"<td style='padding: 15px 0; width: 180px; border-bottom: 1px solid #eee;'>"
-                        top_videos_html += f"<a href='{url}'><img src='{thumb}' alt='Thumbnail' width='160' style='border-radius: 8px;'></a>"
-                        top_videos_html += f"</td>"
-                        top_videos_html += f"<td style='padding: 15px 10px; vertical-align: top; border-bottom: 1px solid #eee;'>"
-                        top_videos_html += f"<h3 style='margin: 0 0 5px 0; font-size: 16px;'><a href='{url}' style='color: #0056b3; text-decoration: none;'>{title}</a></h3>"
-                        top_videos_html += f"<p style='margin: 0; color: #555; font-size: 14px;'><strong>{channel}</strong></p>"
-                        top_videos_html += f"<p style='margin: 5px 0 0 0; color: #777; font-size: 13px;'>👁️ {views:,} views &nbsp;&nbsp; 👍 {likes:,} likes</p>"
-                        top_videos_html += f"</td>"
-                        top_videos_html += f"</tr>"
+                        top_videos_html += f"""
+                            <div style="background-color: #1e293b; border: 1px solid #334155; border-radius: 10px; margin-bottom: 25px; overflow: hidden;">
+                                <a href="{url}" style="display: block; background-color: #000; text-align: center;">
+                                    <img src="{thumb}" alt="Thumbnail" style="width: 100%; max-width: 100%; height: auto; display: block; object-fit: cover;">
+                                </a>
+                                <div style="padding: 20px;">
+                                    <div style="display: inline-block; background-color: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 4px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Rank #{i + 1}</div>
+                                    <h3 style="margin: 0 0 8px 0; font-size: 18px; line-height: 1.4; font-weight: 700;">
+                                        <a href="{url}" style="color: #f8fafc; text-decoration: none;">{title}</a>
+                                    </h3>
+                                    <p style="margin: 0 0 12px 0; color: #94a3b8; font-size: 14px; display: flex; align-items: center;">📺 {channel}</p>
+                                    <p style="margin: 0 0 15px 0; color: #cbd5e1; font-size: 14px; line-height: 1.5;">{desc}</p>
+                                    
+                                    <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 1px solid #334155; padding-top: 15px; margin-top: 15px;">
+                                        <tr>
+                                            <td style="color: #94a3b8; font-size: 13px; font-weight: 600; vertical-align: middle;">
+                                                <span style="color: #60a5fa;">👁️ {views:,} Views</span> &nbsp;&nbsp; 
+                                                <span style="color: #f87171;">👍 {likes:,} Likes</span>
+                                            </td>
+                                            <td align="right" style="vertical-align: middle;">
+                                                <a href="{url}" style="display: inline-block; background-color: #3b82f6; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600;">Watch Now</a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        """
                         
-                    top_videos_html += "</table><br>"
+                    top_videos_html += """
+                        </div>
+                    </div>
+                    """
             except Exception as e:
                 print(f"Error parsing json data for email HTML: {e}")
             
-    subject = "Your Automated AI YouTube Insights Report is Ready!"
+    subject = "🔥 Your Top 30 AI YouTube Insights are Ready!"
     
     text_body = f"""Hello,
 
@@ -139,18 +172,22 @@ Your Output Automation Bot
 
     html_body = f"""
     <html>
-      <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
-        <h1 style="color: #4CAF50;">🤖 Your AI YouTube Insights are Ready!</h1>
-        <p>Hello! Your latest YouTube AI Insights automated report has been successfully generated.</p>
-        
-        <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p style="margin: 0; font-size: 16px;"><strong>📊 View Full Presentation Slides:</strong> <br>
-            <a href="{deck_url}" style="color: #0056b3; text-decoration: none; font-size: 18px;">{deck_url}</a></p>
+      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #020617; padding: 40px 10px; margin: 0;">
+        <div style="max-width: 600px; margin: 0 auto 30px auto; background-color: #0f172a; padding: 25px; border-radius: 12px; text-align: center; border: 1px solid #334155;">
+            <h2 style="color: #f8fafc; margin: 0 0 15px 0; font-size: 20px;">🤖 AI Insights Automated Report</h2>
+            <div style="background-color: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 15px; margin-bottom: 0;">
+                <p style="margin: 0; color: #e2e8f0; font-size: 15px; font-weight: 500;">
+                    📊 View Full Presentation Slides:<br>
+                    <a href="{deck_url}" style="color: #60a5fa; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block; margin-top: 5px;">{deck_url}</a>
+                </p>
+            </div>
         </div>
         
         {top_videos_html}
         
-        <p>Best regards,<br><strong>Your Output Automation Bot</strong></p>
+        <div style="max-width: 600px; margin: 30px auto 0 auto; text-align: center; color: #64748b; font-size: 13px;">
+            <p>Generated automatically by your Output Automation Bot.</p>
+        </div>
       </body>
     </html>
     """
