@@ -100,10 +100,10 @@ def main():
                 
                 if top_videos:
                     top_videos_html = """
-                    <div style="max-width: 600px; margin: 0 auto; background-color: #0f172a; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-                        <div style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); padding: 30px 20px; text-align: center;">
-                            <h1 style="margin: 0; color: white; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">🔥 Top 30 Viral AI Videos</h1>
-                            <p style="margin: 10px 0 0; color: rgba(255,255,255,0.9); font-size: 15px;">The most hyped AI & Automation content from the last 7 days</p>
+                    <div style="max-width: 600px; margin: 0 auto; background-color: #09090b; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border: 1px solid #27272a;">
+                        <div style="background: linear-gradient(135deg, #10b981, #06b6d4); padding: 40px 20px; text-align: center;">
+                            <h1 style="margin: 0; color: white; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">🔥 Top 30 Viral AI Videos</h1>
+                            <p style="margin: 12px 0 0; color: rgba(255,255,255,0.95); font-size: 16px; font-weight: 500;">The most hyped AI & Automation content from the last 7 days</p>
                         </div>
                         <div style="padding: 30px 20px;">
                     """
@@ -123,26 +123,26 @@ def main():
                         url = f"https://www.youtube.com/watch?v={vid_id}"
                         
                         top_videos_html += f"""
-                            <div style="background-color: #1e293b; border: 1px solid #334155; border-radius: 10px; margin-bottom: 25px; overflow: hidden;">
-                                <a href="{url}" style="display: block; background-color: #000; text-align: center;">
-                                    <img src="{thumb}" alt="Thumbnail" style="width: 100%; max-width: 100%; height: auto; display: block; object-fit: cover;">
+                            <div style="background-color: #18181b; border: 1px solid #27272a; border-radius: 12px; margin-bottom: 25px; overflow: hidden; transition: all 0.3s ease;">
+                                <a href="{url}" style="display: block; background-color: #000; text-align: center; position: relative;">
+                                    <img src="{thumb}" alt="Thumbnail" style="width: 100%; max-width: 100%; height: auto; display: block; object-fit: cover; opacity: 0.95;">
                                 </a>
-                                <div style="padding: 20px;">
-                                    <div style="display: inline-block; background-color: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 4px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Rank #{i + 1}</div>
-                                    <h3 style="margin: 0 0 8px 0; font-size: 18px; line-height: 1.4; font-weight: 700;">
-                                        <a href="{url}" style="color: #f8fafc; text-decoration: none;">{title}</a>
+                                <div style="padding: 24px;">
+                                    <div style="display: inline-block; background: linear-gradient(90deg, rgba(16, 185, 129, 0.15), rgba(6, 182, 212, 0.15)); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 6px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px;">Rank #{i + 1}</div>
+                                    <h3 style="margin: 0 0 10px 0; font-size: 19px; line-height: 1.4; font-weight: 700;">
+                                        <a href="{url}" style="color: #f4f4f5; text-decoration: none;">{title}</a>
                                     </h3>
-                                    <p style="margin: 0 0 12px 0; color: #94a3b8; font-size: 14px; display: flex; align-items: center;">📺 {channel}</p>
-                                    <p style="margin: 0 0 15px 0; color: #cbd5e1; font-size: 14px; line-height: 1.5;">{desc}</p>
+                                    <p style="margin: 0 0 14px 0; color: #a1a1aa; font-size: 14px; display: flex; align-items: center; font-weight: 500;">📺 {channel}</p>
+                                    <p style="margin: 0 0 20px 0; color: #d4d4d8; font-size: 15px; line-height: 1.6;">{desc}</p>
                                     
-                                    <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 1px solid #334155; padding-top: 15px; margin-top: 15px;">
+                                    <table width="100%" cellpadding="0" cellspacing="0" style="border-top: 1px solid #27272a; padding-top: 20px; margin-top: 15px;">
                                         <tr>
-                                            <td style="color: #94a3b8; font-size: 13px; font-weight: 600; vertical-align: middle;">
-                                                <span style="color: #60a5fa;">👁️ {views:,} Views</span> &nbsp;&nbsp; 
-                                                <span style="color: #f87171;">👍 {likes:,} Likes</span>
+                                            <td style="color: #a1a1aa; font-size: 13px; font-weight: 600; vertical-align: middle;">
+                                                <span style="color: #2dd4bf; background-color: rgba(45, 212, 191, 0.1); padding: 4px 8px; border-radius: 4px;">👁️ {views:,} Views</span> &nbsp;&nbsp; 
+                                                <span style="color: #fb7185; background-color: rgba(251, 113, 133, 0.1); padding: 4px 8px; border-radius: 4px;">👍 {likes:,} Likes</span>
                                             </td>
                                             <td align="right" style="vertical-align: middle;">
-                                                <a href="{url}" style="display: inline-block; background-color: #3b82f6; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600;">Watch Now</a>
+                                                <a href="{url}" style="display: inline-block; background: linear-gradient(135deg, #10b981, #0ea5e9); color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; text-align: center;">Watch Now</a>
                                             </td>
                                         </tr>
                                     </table>
@@ -172,20 +172,20 @@ Your Output Automation Bot
 
     html_body = f"""
     <html>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #020617; padding: 40px 10px; margin: 0;">
-        <div style="max-width: 600px; margin: 0 auto 30px auto; background-color: #0f172a; padding: 25px; border-radius: 12px; text-align: center; border: 1px solid #334155;">
-            <h2 style="color: #f8fafc; margin: 0 0 15px 0; font-size: 20px;">🤖 AI Insights Automated Report</h2>
-            <div style="background-color: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 15px; margin-bottom: 0;">
-                <p style="margin: 0; color: #e2e8f0; font-size: 15px; font-weight: 500;">
+      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #000000; padding: 40px 10px; margin: 0;">
+        <div style="max-width: 600px; margin: 0 auto 30px auto; background-color: #09090b; padding: 30px; border-radius: 16px; text-align: center; border: 1px solid #27272a; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);">
+            <h2 style="color: #f4f4f5; margin: 0 0 20px 0; font-size: 22px; font-weight: 800;">🤖 AI Insights Automated Report</h2>
+            <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1)); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 20px; margin-bottom: 0;">
+                <p style="margin: 0; color: #e4e4e7; font-size: 16px; font-weight: 600;">
                     📊 View Full Presentation Slides:<br>
-                    <a href="{deck_url}" style="color: #60a5fa; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block; margin-top: 5px;">{deck_url}</a>
+                    <a href="{deck_url}" style="color: #2dd4bf; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-block; margin-top: 8px; padding-bottom: 2px; border-bottom: 2px solid rgba(45, 212, 191, 0.3);">{deck_url}</a>
                 </p>
             </div>
         </div>
         
         {top_videos_html}
         
-        <div style="max-width: 600px; margin: 30px auto 0 auto; text-align: center; color: #64748b; font-size: 13px;">
+        <div style="max-width: 600px; margin: 40px auto 0 auto; text-align: center; color: #52525b; font-size: 13px; font-weight: 500;">
             <p>Generated automatically by your Output Automation Bot.</p>
         </div>
       </body>
