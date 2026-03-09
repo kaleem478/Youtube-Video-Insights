@@ -1,0 +1,30 @@
+{
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/kaleem478/Youtube-Video-Insights/issues"
+  },
+  "dependencies": {
+    "import-in-the-middle": "1.15.0"
+  },
+  "description": "This project is an automated AI agent workflow adhering to the **WAT (Workflows, Agents, Tools)** architecture. It is designed to automatically scrape YouTube channels in the AI and AI automation niche, synthesize the data into a Google Slides presentation, and email the final intelligence deliverable.",
+  "devDependencies": {
+  },
+  "homepage": "https://github.com/kaleem478/Youtube-Video-Insights#readme",
+  "keywords": [
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "antigravity",
+  "peerDependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaleem478/Youtube-Video-Insights.git"
+  },
+  "scripts": {
+  },
+  "trustedDependencies": [
+    "import-in-the-middle"
+  ],
+  "version": "1.0.0"
+}

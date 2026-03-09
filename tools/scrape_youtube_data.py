@@ -114,8 +114,9 @@ def get_channel_stats(channel_id: str) -> Dict[str, Any]:
 def get_transcript(video_id: str) -> str:
     """Fetch the English transcript of the video as a single string."""
     try:
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
-        full_text = " ".join([item['text'] for item in transcript_list])
+        api = YouTubeTranscriptApi()
+        transcript_list = api.list(video_id).find_transcript(['en']).fetch()
+        full_text = " ".join([item.text for item in transcript_list])
         return full_text
     except Exception as e:
         print(f"Warning: Could not get transcript for {video_id}. Error: {str(e)}")
